@@ -7,7 +7,7 @@
 /*
  * Settings
  */
-var PREFIX_BATCH_SIZE = 50;
+let PREFIX_BATCH_SIZE = 300;
 
 /**
  * Global variables...
@@ -335,11 +335,11 @@ function clearPrefixSearch() {
 /*
  * Wrapper for pacing our searches somewhat
  *
- * 500 ms works out to be a pretty good compromise
+ * 800ms works out to be a pretty good compromise
  */
 function prefixSearchKey() {
 	clearTimeout(search_key_timeout);
-	search_key_timeout = setTimeout(function() { performPrefixSearch(false) }, 500);
+	search_key_timeout = setTimeout(function() { performPrefixSearch(false) }, 800);
 }
 
 /*
