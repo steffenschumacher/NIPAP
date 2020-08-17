@@ -626,7 +626,7 @@ tbody.listing > tr:hover {
 }
 
 .prefix_node {
-	width: 150px;
+	width: 220px;
 }
 
 .prefix_tags, .prefix_comment {
@@ -635,7 +635,7 @@ tbody.listing > tr:hover {
 }
 
 .prefix_order_id, .prefix_customer_id {
-	width: 80px;
+	width: 45px;
 }
 
 .prefix_description {
