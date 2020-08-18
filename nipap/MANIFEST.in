@@ -1,1 +1,2 @@
 include README.rst MANIFEST.in
+include *.man.rst

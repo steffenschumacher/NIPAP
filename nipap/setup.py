@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-import subprocess
+from setuptools import setup
+from docutils.core import publish_cmdline
+from docutils.writers import manpage
 import sys
 
 import nipap
@@ -11,8 +12,8 @@ import nipap
 def get_data_files():
     # generate man pages using rst2man
     try:
-        subprocess.call(["rst2man", "nipapd.man.rst", "nipapd.8"])
-        subprocess.call(["rst2man", "nipap-passwd.man.rst", "nipap-passwd.1"])
+        publish_cmdline(writer=manpage.Writer(), argv=["nipapd.man.rst", "nipapd.8"])
+        publish_cmdline(writer=manpage.Writer(), argv=["nipap-passwd.man.rst", "nipap-passwd.1"])
     except OSError as exc:
         print >> sys.stderr, "rst2man failed to run:", str(exc)
         sys.exit(1)
