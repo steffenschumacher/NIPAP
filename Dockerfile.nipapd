@@ -32,31 +32,15 @@
 # via a volume.
 #
 
-FROM ubuntu:xenial
-MAINTAINER Kristian Larsson <kristian@spritelink.net>
+FROM net-docker-reg.vestas.net/ubuntu-xenial-nipap:latest
+MAINTAINER Steffen Schumacher <ssch@wheel.dk>
 
 ENV DEBIAN_FRONTEND=noninteractive
-
-# apt update, upgrade & install packages
-RUN apt-get update -qy && apt-get upgrade -qy \
- && apt-get install -qy devscripts \
-    make \
-    libpq-dev \
-    libsqlite3-dev \
-    postgresql-client \
-    python \
-    python-all \
-    python-docutils \
-    python-pip \
-    python-dev \
- && pip --no-input install envtpl \
- && rm -rf /var/lib/apt/lists/*
-
-
+RUN rm -rf /var/lib/apt/lists/*
 COPY nipap /nipap
+
 WORKDIR /nipap
-RUN pip --no-input install -r requirements.txt \
- && python setup.py install
+RUN pip --no-input install -r requirements.txt && python setup.py install
 
 EXPOSE 1337
 ENV LISTEN_ADDRESS=0.0.0.0 LISTEN_PORT=1337 SYSLOG=false DB_PORT=5432 DB_SSLMODE=disable
