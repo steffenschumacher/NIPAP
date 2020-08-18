@@ -9,7 +9,7 @@ setup(
     author_email=nipapwww.__author_email__,
     url=nipapwww.__url__,
     install_requires=[
-        "Pylons>=1.0",
+        "Pylons>=1.0.2",
         "Jinja2",
         "pynipap",
         "nipap"

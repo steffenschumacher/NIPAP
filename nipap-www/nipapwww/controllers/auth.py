@@ -41,6 +41,7 @@ class AuthController(BaseController):
                 return render('login.html')
         except AuthError as exc:
             c.error = 'Authentication error'
+            log.exception('Autentication error for %s (%s)' % (request.params.get('username'), request.params.get('password')))
             return render('login.html')
 
         # Mark user as logged in
