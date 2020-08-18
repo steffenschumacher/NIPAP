@@ -2405,12 +2405,12 @@ class Nipap:
         else:
             col_prefix = table_name + "."
 
-        if 'val1' not in query:
+        if 'val1' not in query or query['val1'] is None:
             raise NipapMissingInputError("'val1' must be specified")
-        if 'val2' not in query:
-            raise NipapMissingInputError("'val2' must be specified")
+        if 'val2' not in query or query['val2'] is None:
+            raise NipapMissingInputError("Value (val2 in API) for '%s' must be specified" % query['val1'])
 
-        if type(query['val1']) == dict and type(query['val2']) == dict:
+        if isinstance(query['val1'], dict) and isinstance(query['val2'], dict):
             # Sub expression, recurse! This is used for boolean operators: AND OR
             # add parantheses
 
