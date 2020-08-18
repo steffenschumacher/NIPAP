@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-import subprocess
+from setuptools import setup
+from docutils.core import publish_cmdline
+from docutils.writers import manpage
 import sys
 
 import nipap_whoisd
@@ -10,7 +11,7 @@ import nipap_whoisd
 def get_data_files():
     # generate man pages using rst2man
     try:
-        subprocess.call(["rst2man", "nipap-whoisd.man.rst", "nipap-whoisd.8"])
+        publish_cmdline(writer=manpage.Writer(), argv=["nipap-whoisd.man.rst", "nipap-whoisd.8"])
     except OSError as exc:
         print >> sys.stderr, "rst2man failed to run:", str(exc)
         sys.exit(1)
