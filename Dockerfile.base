@@ -1,0 +1,30 @@
+FROM ubuntu:xenial
+MAINTAINER Steffen Schumacher <ssch@wheel.dk>
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# apt update, upgrade & install packages
+RUN apt-get update -qy && apt-get upgrade -qy \
+ && apt-get install -qy devscripts \
+    make \
+    libpq-dev \
+    libsqlite3-dev \
+    postgresql-client \
+    software-properties-common \
+    vim
+RUN apt-get -qy install -qy python-all \
+    python-docutils \
+    python-pip \
+    python-dev
+RUN apt-get install -qy libsasl2-dev python-dev libldap2-dev libssl-dev
+
+RUN mkdir -p /usr/share/ca-certificates/extra
+COPY utilities/*.crt /usr/share/ca-certificates/extra/
+RUN ls /usr/share/ca-certificates/extra/*.crt | sed 's/\/usr\/share\/ca-certificates\///g' >> /etc/ca-certificates.conf
+RUN update-ca-certificates
+RUN pip install --upgrade pip
+RUN pip config set global.cert /etc/ssl/certs/ca-certificates.crt
+RUN pip install envtpl
+RUN echo BUILDID
+
+ENTRYPOINT ["/bin/bash"]
