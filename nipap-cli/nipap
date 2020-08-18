@@ -9,6 +9,7 @@ import logging
 import os
 import sys
 import socket
+from __future__ import print_function
 
 import nipap_cli
 import nipap_cli.nipap_cli
@@ -39,7 +40,6 @@ class NullHandler(logging.Handler):
 
     def emit(self, record):
         pass
-
 
 
 if __name__ == '__main__':
@@ -79,8 +79,8 @@ if __name__ == '__main__':
     cfg_defaults = {
         'hostname': 'localhost',
         'post': 1337,
-        'password': None,
-        'prefix_list_columns': None
+        'password': '',
+        'prefix_list_columns': ''
     }
     # read configuration
     cfg = configparser.ConfigParser(cfg_defaults)
