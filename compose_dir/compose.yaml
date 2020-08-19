@@ -1,0 +1,75 @@
+# sample compose file for deploying full nipap stack
+#
+# usage:
+# 1. Create a folder for persistent storage (pgsql db, logs & config)
+# 2. copy nipap.conf.dist to folder and edit as needed (msg+ldap settings)
+# 3. update compose.yaml:nipap-www wrt logging mount
+version: '3.2'
+services:
+  nipap-db:
+    image:  net-docker-reg.vestas.net/nipap-postgres:10.10
+    volumes:
+      - ${dir}/pgsql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=nipap
+      - POSTGRES_PASSWORD=S3cretDBPas5
+      - POSTGRES_DB=nipap
+
+  nipapd:
+    image: net-docker-reg.vestas.net/nipapd:0.29.8
+    volumes:
+    - ${dir}/nipap.conf.dist:/nipap/nipap.conf.dist:ro
+    - ${dir}/local_auth.db:/etc/nipap/local_auth.db
+    depends_on:
+      - nipap-db
+    links:
+      - nipap-db
+    ports:
+      - "1337:1337"
+    environment:
+      - DB_PORT=5432
+      - DB_USERNAME=nipap
+      - DB_PASSWORD=S3cretDBPas5
+      - DB_HOST=nipap-db
+      - DB_NAME=nipap
+      - NIPAP_USERNAME=www
+      - NIPAP_PASSWORD=nipapP4ssw0rd
+      - DB_SSLMODE=disable
+      - SYSLOG=false
+
+  nipap-www:
+    image: net-docker-reg.vestas.net/nipap-www:0.29.8
+    volumes:
+    - ${dir}/nipap.conf.dist:/nipap/nipap.conf.dist:ro
+    - ${dir}/local_auth.db:/etc/nipap/local_auth.db
+    # only if web settings needs to be tweaked
+    # - ${dir}/nipap-www.ini:/etc/nipap/nipap-www.ini
+    #- ${dir}/www:/etc/nipap/www
+    - ${dir}/wwwlogs:/var/log/apache2
+    links:
+      - nipapd
+    ports:
+      - "8989:80"
+    environment:
+      - NIPAPD_USERNAME=www
+      - NIPAPD_PASSWORD=nipapP4ssw0rd
+      - NIPAPD_HOST=nipapd
+      - WWW_USERNAME=www
+      - WWW_PASSWORD=nipapP4ssw0rd
+
+  nipap-whoisd:
+    image: net-docker-reg.vestas.net/nipap-whoisd:0.29.8
+    volumes:
+    - ${dir}/local_auth.db:/etc/nipap/local_auth.db
+    - ${dir}/nipap.conf.dist:/whoisd/nipap.conf.dist:ro
+    links:
+      - nipapd
+    ports:
+      - "43:43"
+    environment:
+      - NIPAPD_USERNAME=www
+      - NIPAPD_PASSWORD=nipapP4ssw0rd
+      - NIPAPD_HOST=nipapd
