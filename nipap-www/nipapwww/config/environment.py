@@ -1,6 +1,6 @@
 """Pylons environment configuration"""
 import os
-
+import logging
 from jinja2 import Environment, FileSystemLoader
 from pylons.configuration import PylonsConfig
 
@@ -52,5 +52,5 @@ def load_environment(global_conf, app_conf):
 
     # set XML-RPC URI in pynipap module
     pynipap.xmlrpc_uri = cfg.get('www', 'xmlrpc_uri')
-
+    logging.basicConfig(level=logging.INFO)
     return config
