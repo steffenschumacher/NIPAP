@@ -19,6 +19,11 @@ docker build --build-arg VERSION=0.29.8 --build-arg BUILDID=$(date +%s) -t net-d
 docker build --build-arg VERSION=0.29.8 --build-arg BUILDID=$(date +%s) -t net-docker-reg.vestas.net/nipap-www:0.29.8 -f Dockerfile.www .
 docker build --build-arg VERSION=0.29.8 --build-arg BUILDID=$(date +%s) -t net-docker-reg.vestas.net/nipap-whoisd:0.29.8 -f Dockerfile.whoisd .
 
+docker push net-docker-reg.vestas.net/ubuntu-xenial-nipap:latest
+docker push net-docker-reg.vestas.net/nipapd:0.29.8
+docker push net-docker-reg.vestas.net/nipap-www:0.29.8
+docker push net-docker-reg.vestas.net/nipap-whoisd:0.29.8
+
 
 Using a compose file
 --------------------

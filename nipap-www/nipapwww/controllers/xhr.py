@@ -151,6 +151,7 @@ class XhrController(BaseController):
 
         try:
             v.save()
+            print('add_vrf (%s) %s' % (session['user'], request.json))
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
 
@@ -180,6 +181,7 @@ class XhrController(BaseController):
 
         try:
             v.save()
+            print('edit_vrf (%s) %s' % (session['user'], request.json))
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
 
@@ -193,7 +195,9 @@ class XhrController(BaseController):
 
         try:
             vrf = VRF.get(int(id))
+            name = vrf.name
             vrf.remove()
+            print('remove_vrf (%s) %s' % (session['user'], name))
 
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
@@ -276,7 +280,8 @@ class XhrController(BaseController):
             p.avps = request.json['avps']
 
         try:
-           p.save()
+            p.save()
+            print('add_pool (%s) %s' % (session['user'], request.json))
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
 
@@ -307,7 +312,8 @@ class XhrController(BaseController):
             p.avps = request.json['avps']
 
         try:
-           p.save()
+            p.save()
+            print('edit_pool (%s) %s' % (session['user'], request.json))
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
 
@@ -321,7 +327,9 @@ class XhrController(BaseController):
 
         try:
             pool = Pool.get(int(id))
+            name = pool.name
             pool.remove()
+            print('remove_pool (%s) %s' % (session['user'], name))
 
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
@@ -619,6 +627,7 @@ class XhrController(BaseController):
 
         try:
             p.save(args)
+            print('add_prefix (%s) %s' % (session['user'], request.json))
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
 
@@ -687,7 +696,7 @@ class XhrController(BaseController):
                 p.tags = request.json['tags']
             if 'avps' in request.json:
                 p.avps = request.json['avps']
-
+            print('edit_prefix (%s) %s' % (session['user'], request.json))
             p.save()
 
         except NipapError, e:
@@ -703,7 +712,9 @@ class XhrController(BaseController):
 
         try:
             p = Prefix.get(int(id))
+            prefix = p.display_prefix
             p.remove()
+            print('remove_prefix (%s) %s' % (session['user'], prefix))
 
         except NipapError, e:
             return json.dumps({'error': 1, 'message': e.args, 'type': type(e).__name__})
