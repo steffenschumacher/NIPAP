@@ -27,54 +27,32 @@ docker push net-docker-reg.vestas.net/nipap-whoisd:0.29.8
 
 Using a compose file
 --------------------
-Below is an example compose snip which will maintain the database in $dir/pgsql::
+Please see the compose example in compose_dir, as this illustrates how to run a NIPAP stack.
 
-    version: '3.2'
-    services:
-      nipap-db:
-        image:  nipap/postgres-ip4r
-        volumes:
-          - ./${dir}/pgsql:/var/lib/postgresql/data
-        ports:
-          - "5432:5432"
-        environment:
-          - PGDATA=/var/lib/postgresql/data/pgdata
-          - POSTGRES_USER=nipap
-          - POSTGRES_PASSWORD=S3cretDBPas5
-          - POSTGRES_DB=nipap
+In this example, startup.sh (bash script) will:
+    1. check for presence of a config file
+    2. add an empty db for local nipap users, if absent - to be mounted by containers
+    3. startup the compose file, offering the folder housing the script to store: pgsql db, www logs & local user db mentioned above.
 
-      nipapd:
-        image: nipap/nipapd:master
-        depends_on:
-          - nipap-db
-        links:
-          - nipap-db
-        ports:
-          - "1337:1337"
-        environment:
-          - DB_USERNAME=nipap
-          - DB_PASSWORD=S3cretDBPas5
-          - DB_HOST=nipap-db
-          - DB_NAME=nipap
-          - NIPAP_USERNAME=www
-          - NIPAP_PASSWORD=nipapP4ssw0rd
+Output::
 
-      nipap-www:
-        image: nipap/nipap-www
-        links:
-          - nipapd
-        ports:
-          - "8989:80"
-        environment:
-          - NIPAPD_USERNAME=www
-          - NIPAPD_PASSWORD=nipapP4ssw0rd
-          - WWW_USERNAME=www
-          - WWW_PASSWORD=nipapP4ssw0rd
-
-So if you start NIPAP using::
-
-    export dir=unittests && docker-compose -f nipap-compose.yaml up -d
-    export dir=etc_nipap && docker-compose -f etc_nipap/compose.yaml up
-
-Then it will use ./unittestes/pgsql to store the database.
+    compose_dir stsmr$ bash startup.sh
+    Creating network "nipap_default" with the default driver
+    Creating nipap_nipap-db_1 ... done
+    Creating nipap_nipapd_1   ... done
+    Creating nipap_nipap-www_1    ... done
+    Creating nipap_nipap-whoisd_1 ... done
+    Attaching to nipap_nipap-db_1, nipap_nipapd_1, nipap_nipap-www_1, nipap_nipap-whoisd_1
+    nipapd_1        | wait-for-it.sh: waiting 60 seconds for nipap-db:5432
+    nipap-www_1     | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.240.4. Set the 'ServerName' directive globally to suppress this message
+    nipap-db_1      | 2020-08-19 11:50:15.214 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+    nipap-db_1      | 2020-08-19 11:50:15.214 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+    nipap-db_1      | 2020-08-19 11:50:15.231 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+    nipap-db_1      | 2020-08-19 11:50:15.309 UTC [24] LOG:  database system was shut down at 2020-08-19 11:49:24 UTC
+    nipap-db_1      | 2020-08-19 11:50:15.342 UTC [1] LOG:  database system is ready to accept connections
+    nipap-db_1      | 2020-08-19 11:50:15.610 UTC [31] LOG:  incomplete startup packet
+    nipapd_1        | wait-for-it.sh: nipap-db:5432 is available after 4 seconds
+    nipapd_1        | Creating user 'www'
+    nipapd_1        | UNIQUE constraint failed: user.username
+    nipapd_1        | Starting nipap daemon..
 
